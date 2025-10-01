@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>↩️ Return Book</h2>
+<p>Return a borrowed book to the library.</p>
+
+<form method="POST" action="{{ url_for('borrowing.return_book') }}">
+    <div class="form-group">
+        <label for="patron_id">Patron ID *</label>
+        <input type="text" id="patron_id" name="patron_id" pattern="[0-9]{6}" maxlength="6" required
+               value="{{ request.form.patron_id if request.form.patron_id else '' }}">
+        <small style="color: #666;">6-digit library card number</small>
+    </div>
+    
+    <div class="form-group">
+        <label for="book_id">Book ID *</label>
+        <input type="number" id="book_id" name="book_id" min="1" required
+               value="{{ request.form.book_id if request.form.book_id else '' }}">
+        <small style="color: #666;">The ID of the book you want to return</small>
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Process Return</button>
+        <a href="{{ url_for('catalog.catalog') }}" class="btn" style="margin-left: 10px;">Cancel</a>
+    </div>
+</form>
+
+<!-- Late Fee Check Results -->
+<div id="lateFeeResult" style="margin-top: 20px; display: none;">
+    <div class="alert" id="lateFeeAlert">
+        <h4>💰 Late Fee Information</h4>
+        <div id="lateFeeContent"></div>
+    </div>
+</div>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #e8f4fd; border: 1px solid #b3d9ff; border-radius: 5px;">
+    <h4>ℹ️ Return Process</h4>
+    <p>The system will automatically:</p>
+    <ul>
+        <li>✅ Verify that the book was actually borrowed by this patron</li>
+        <li>✅ Update the available copies count</li>
+        <li>✅ Record the return date</li>
+        <li>✅ Calculate and display any late fees owed</li>
+    </ul>
+    <p><strong>Late Fee Policy:</strong> $0.50/day for first 7 days overdue, then $1.00/day (maximum $15.00 per book)</p>
+</div>
+
+<div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px;">
+    <h4>🔍 Need Help Finding Book ID?</h4>
+    <p>You can find the Book ID by:</p>
+    <ul>
+        <li>Looking at the <a href="{{ url_for('catalog.catalog') }}">Book Catalog</a> - Book IDs are shown in the first column</li>
+        <li>Checking your borrowing receipt or library records</li>
+    </ul>
+</div>
+
+<script>
+document.getElementById('checkLateFee').addEventListener('click', function() {
+    const patronId = document.getElementById('patron_id').value.trim();
+    const bookId = document.getElementById('book_id').value.trim();
+    
+    // Validate inputs
+    if (!patronId || !bookId) {
+        alert('Please enter both Patron ID and Book ID to check late fees.');
+        return;
+    }
+    
+    if (!/^\d{6}$/.test(patronId)) {
+        alert('Patron ID must be exactly 6 digits.');
+        return;
+    }
+    
+    if (!/^\d+$/.test(bookId) || parseInt(bookId) <= 0) {
+        alert('Book ID must be a positive number.');
+        return;
+    }
+    
+    // Show loading state
+    const resultDiv = document.getElementById('lateFeeResult');
+    const contentDiv = document.getElementById('lateFeeContent');
+    const alertDiv = document.getElementById('lateFeeAlert');
+    
+    resultDiv.style.display = 'block';
+    contentDiv.innerHTML = '<p>Checking late fees...</p>';
+    alertDiv.className = 'alert alert-info';
+    
+    // Make API call to check late fees
+    fetch(`/api/late_fee/${patronId}/${bookId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.fee_amount > 0) {
+                alertDiv.className = 'alert alert-warning';
+                contentDiv.innerHTML = `
+                    <p><strong>Late Fee:</strong> $${data.fee_amount.toFixed(2)}</p>
+                    <p><strong>Days Overdue:</strong> ${data.days_overdue}</p>
+                    <p><strong>Status:</strong> ${data.status}</p>
+                `;
+            } else {
+                alertDiv.className = 'alert alert-success';
+                contentDiv.innerHTML = `
+                    <p><strong>No Late Fees!</strong></p>
+                    <p><strong>Status:</strong> ${data.status}</p>
+                `;
+            }
+        })
+        .catch(error => {
+            alertDiv.className = 'alert alert-danger';
+            contentDiv.innerHTML = `
+                <p><strong>Error:</strong> Unable to check late fees. Please try again.</p>
+                <p>Make sure the book is currently borrowed by this patron.</p>
+            `;
+        });
+});
+</script>
+{% endblock %}
