@@ -5,7 +5,10 @@ from library_service import (
 
 def test_add_book_valid_input():
     """Test adding a book with valid input."""
-    success, message = add_book_to_catalog("Test Book", "Test Author", "1234567890123", 5)
+    import random
+    # 生成随机13位ISBN，避免重复问题
+    random_isbn = ''.join([str(random.randint(0, 9)) for _ in range(13)])
+    success, message = add_book_to_catalog("Test Book", "Test Author", random_isbn, 5)
     
     assert success == True
     assert "successfully added" in message.lower()
