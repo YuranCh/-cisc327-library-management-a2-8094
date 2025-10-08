@@ -25,4 +25,6 @@ jobs:
     - name: Run tests with coverage
       working-directory: .
       run: |
+        echo "Current dir: $(pwd)"
+        ls
         pytest --cov=library_service --cov-report=xml tests/
