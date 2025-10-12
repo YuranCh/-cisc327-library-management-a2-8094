@@ -18,9 +18,11 @@ def initialize_test_data():
     """
     conn = get_db_connection()
     
-    # Clear existing data
+    # Clear existing data and reset auto-increment
     conn.execute("DELETE FROM borrow_records")
     conn.execute("DELETE FROM books")
+    conn.execute("DELETE FROM sqlite_sequence WHERE name='books'")
+    conn.execute("DELETE FROM sqlite_sequence WHERE name='borrow_records'")
     conn.commit()
     
     # Add test books

@@ -9,7 +9,7 @@ from library_service import (
 def test_return_book_by_patron_valid_input():
     """Test returning a book with valid input."""
     # 123456 has borrowed books with IDs 2, 3, and 11
-    success, message = return_book_by_patron("123456", 1)  
+    success, message = return_book_by_patron("123456", 2)  # Use book ID 2 which user has borrowed
     
     assert success == True
     assert "successfully returned" in message.lower()

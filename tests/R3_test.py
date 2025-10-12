@@ -8,7 +8,7 @@ from library_service import (
 
 def test_borrow_book_valid_input():
     """Test borrowing a book with valid input."""
-    success, message = borrow_book_by_patron("123456", 2)  
+    success, message = borrow_book_by_patron("123456", 7)  # Use book ID 7 which should be available
     
     assert success == True
     assert "successfully borrowed" in message.lower()
