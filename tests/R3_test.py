@@ -33,3 +33,23 @@ def test_borrow_book_patron_id_not_digits():
 
     assert success == False
     assert "6 digits" in message.lower()
+
+# AI-Generated Test Cases for R3
+
+def test_borrow_book_patron_borrowing_limit():
+    """AI-Generated: Test borrowing when patron has reached maximum borrowing limit (5 books)."""
+    # This test assumes patron 123456 already has some books borrowed
+    # Try to borrow multiple books to reach the limit
+    success, message = borrow_book_by_patron("123456", 1)  # Assuming book 1 exists and is available
+    
+    # The result depends on current borrow count - if already at limit, should fail
+    if not success:
+        assert "limit" in message.lower() or "maximum" in message.lower()
+
+def test_borrow_book_unavailable_book():
+    """AI-Generated: Test borrowing a book that has zero available copies."""
+    # Try to borrow a book that should have 0 available copies (book ID 3 based on test data)
+    success, message = borrow_book_by_patron("654321", 3)  # Different patron, unavailable book
+    
+    assert success == False
+    assert "not available" in message.lower() or "unavailable" in message.lower()

@@ -47,3 +47,21 @@ def test_add_book_zero_copies():
     
     assert success == False
     assert "positive" in message.lower()
+
+# AI-Generated Test Cases for R1
+
+def test_add_book_title_max_length():
+    """AI-Generated: Test adding a book with title at maximum allowed length (200 chars)."""
+    long_title = "A" * 200  # Exactly 200 characters
+    success, message = add_book_to_catalog(long_title, "Test Author", "1234567890123", 5)
+    
+    assert success == True
+    assert "successfully added" in message.lower()
+
+def test_add_book_title_exceeds_max_length():
+    """AI-Generated: Test adding a book with title exceeding maximum length (201 chars)."""
+    too_long_title = "A" * 201  # 201 characters - exceeds limit
+    success, message = add_book_to_catalog(too_long_title, "Test Author", "1234567890123", 5)
+    
+    assert success == False
+    assert "200 characters" in message

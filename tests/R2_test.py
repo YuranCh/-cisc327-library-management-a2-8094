@@ -84,3 +84,30 @@ def test_get_all_books_empty_database():
     books = get_all_books()
     assert isinstance(books, list)
     assert len(books) == 0
+
+# AI-Generated Test Cases for R2
+
+def test_get_all_books_with_zero_available_copies():
+    """AI-Generated: Test that books with zero available copies are still returned in catalog."""
+    # Add a book with zero available copies
+    insert_book("Unavailable Book", "Test Author", "5555555555555", 5, 0)
+    
+    books = get_all_books()
+    unavailable_books = [book for book in books if book['available_copies'] == 0]
+    
+    assert len(unavailable_books) > 0
+    # Verify the book is in the results even with 0 available copies
+    found = any(book['title'] == "Unavailable Book" for book in books)
+    assert found, "Books with zero available copies should still appear in catalog"
+
+def test_get_all_books_data_integrity():
+    """AI-Generated: Test that available_copies never exceeds total_copies in catalog display."""
+    books = get_all_books()
+    
+    for book in books:
+        assert book['available_copies'] <= book['total_copies'], \
+            f"Available copies ({book['available_copies']}) exceeds total copies ({book['total_copies']}) for book: {book['title']}"
+        assert book['available_copies'] >= 0, \
+            f"Available copies cannot be negative for book: {book['title']}"
+        assert book['total_copies'] > 0, \
+            f"Total copies must be positive for book: {book['title']}"

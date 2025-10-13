@@ -41,3 +41,28 @@ def test_return_book_by_patron_nonexistent_book():
     
     assert success == False
     assert "not found" in message.lower()
+
+# AI-Generated Test Cases for R4
+
+def test_return_book_not_borrowed_by_patron():
+    """AI-Generated: Test returning a book that was not borrowed by the specified patron."""
+    # Try to return a book that exists but wasn't borrowed by this patron
+    success, message = return_book_by_patron("123456", 1)  # Assuming book 1 exists but not borrowed by 123456
+    
+    assert success == False
+    assert ("not borrowed" in message.lower() or 
+            "not found" in message.lower() or 
+            "not currently borrowed" in message.lower())
+
+def test_return_book_already_returned():
+    """AI-Generated: Test returning a book that has already been returned."""
+    # First, successfully return a book
+    return_success, return_msg = return_book_by_patron("123456", 2)
+    
+    # Then try to return the same book again
+    success, message = return_book_by_patron("123456", 2)
+    
+    assert success == False
+    assert ("already returned" in message.lower() or 
+            "not currently borrowed" in message.lower() or
+            "not found" in message.lower())
