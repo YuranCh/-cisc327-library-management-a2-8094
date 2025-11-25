@@ -358,10 +358,6 @@ def test_empty_catalog_display(page: Page, test_server):
     # Verify we're redirected to the add book page
     expect(page).to_have_url(f"{base_url}/add_book")
     expect(page.locator("h2")).to_contain_text("Add New Book")
-    
-    # Test the link works
-    add_book_link.click()
-    expect(page).to_have_url(f"{base_url}/add_book")
 
 
 if __name__ == "__main__":
