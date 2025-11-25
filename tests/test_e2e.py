@@ -71,7 +71,7 @@ def setup_clean_database():
     
     # Clear any existing data
     conn = get_db_connection()
-    conn.execute("DELETE FROM borrowing_records")
+    conn.execute("DELETE FROM borrow_records")
     conn.execute("DELETE FROM books")
     conn.commit()
     conn.close()
