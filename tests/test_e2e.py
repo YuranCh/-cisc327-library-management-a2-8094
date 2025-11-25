@@ -24,7 +24,7 @@ from app import create_app
 from database import init_database, get_db_connection
 
 
-class TestServer:
+class FlaskTestServer:
     """Helper class to manage Flask test server."""
     
     def __init__(self):
@@ -57,7 +57,7 @@ class TestServer:
 @pytest.fixture(scope="session")
 def test_server():
     """Fixture to provide a running Flask server for E2E tests."""
-    server = TestServer()
+    server = FlaskTestServer()
     server.start()
     yield server
     server.stop()
